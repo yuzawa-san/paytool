@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>paytool</title>
+    <link rel="stylesheet" href="static/css/main.css" type="text/css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">paytool</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="index.html">Home</a></li>
+                    <li class="active"><a href="about.html">About</a></li>
+                    <li><a href="https://github.com/yuzawa-san/paytool">Source</a></li>
+                </ul>
+            </div><!--/.navbar-collapse -->
+        </div>
+    </div>
+
+
+    <div class="container">
+        <h2>How It Works</h2>
+        <p>
+            This tool takes in a set of debts and simplifies the number of exchanges of money that need to occur.
+            The set of debts is a directed weighted graph, where the vertices are people and the edges are the debts.
+            The weight on the edges is the amount of debt.
+        </p>
+        
+        <h3>Algorithm</h3>
+        
+        <p>
+            Here is some pseudocode:
+        </p>
+        <pre>
+topological_sort(PEOPLE)
+
+for person 'r' in PEOPLE:
+    for person 't' in PEOPLE who is not 'r':
+        for person 's' who is not 'r' or 't':
+            A = what person 'r' owes person 's' 
+            B = what person 's' owes person 't'
+            if A and B are nonzero:
+                if B > A:
+                    add A to what person 'r' owes person 't'
+                    update what person 'r' owes person 's' to 0
+                    update what person 's' owes person 't' to B - A
+                else:
+                    add B to what person 'r' owes person 't'
+                    update what person 'r' owes person 's' to A - B
+                    update what person 's' owes person 't' to 0
+        </pre>
+        
+        <h3>Failure</h3>
+        <p>
+            If there is a cycle, then the topological sort step will fail and there is no clearly defined solution.
+        </p>
+        
+        <h3>Privacy</h3>
+        <p>
+            This tool uses client-side storage, so the debt information is not sent elsewhere.
+            The data only lives in your browser.
+            Specifically, this uses <a href="http://en.wikipedia.org/wiki/Web_SQL_Database">WebSQL Database</a>.
+        </p>
+        
+        
+        <footer>
+            <hr>
+            <p>a tool by <a href="https://github.com/yuzawa-san">yuzawa-san</a></p>
+        </footer>
+    </div> <!-- /container -->
+
+</body>
+</html>
