@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="lib/tsort/tsort.js"></script>
     <script src="static/js/main.js"></script>
 </head>
 <body>
@@ -28,27 +29,25 @@
 
     <div class="container">
         <h3>Raw Payments</h3>
-        <form id="new">
-            <table id="transactions" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th><input class="form-control" id="new-from" placeholder="from" required/></th>
-                        <th><input class="form-control" id="new-to" placeholder="to" required/></th>
-                        <th><input class="form-control" id="new-value" placeholder="value" value="0" type="number" required/></th> 
-                        <th><input class="form-control" id="new-description" placeholder="description" /></th>
-                        <th><input class='btn btn-primary' type="submit" value="Add Item"/></th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4"></td>
-                        <td><button id="purge" class="btn btn-danger">Remove All</button></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </form>
+        <table id="transactions" class="table table-striped">
+            <thead>
+                <tr>
+                    <th><input class="form-control" id="new-from" placeholder="from" required/></th>
+                    <th><input class="form-control" id="new-to" placeholder="to" required/></th>
+                    <th><input class="form-control" id="new-value" placeholder="value" value="0" type="number" required/></th> 
+                    <th><input class="form-control" id="new-description" placeholder="description" /></th>
+                    <th><input class="btn btn-primary" id="new" value="Add Item"/></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4"></td>
+                    <td><button id="purge" class="btn btn-danger">Remove All</button></td>
+                </tr>
+            </tfoot>
+        </table>
         <h3>Optimized Payments</h3>
         <table id="out" class="table table-striped">
             <thead>

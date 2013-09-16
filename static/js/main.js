@@ -30,7 +30,7 @@ function PayController(){
             errorHandler);
         });
     };
-    
+
     this.purge = function(id){
         db.transaction(function(tx){
             tx.executeSql("DELETE FROM exchange", [],
@@ -60,73 +60,30 @@ function PayController(){
             errorHandler);
         });
     };
-    
+
     this.attach = function(callback){
         render = callback;
     };
-}
-
-function tsort(edges) {
-  var nodes   = {}, // hash: stringified id of the node => { id: id, afters: lisf of ids }
-      sorted  = [], // sorted list of IDs ( returned value )
-      visited = {}; // hash: id of already visited node => true
-  var Node = function(id) {
-    this.id = id;
-    this.afters = [];
-  }
-  // 1. build data structures
-  edges.forEach(function(v) {
-    var from = v[0], to = v[1];
-    if (!nodes[from]) nodes[from] = new Node(from);
-    if (!nodes[to]) nodes[to]     = new Node(to);
-    nodes[from].afters.push(to);
-  });
-
-  // 2. topological sort
-  Object.keys(nodes).forEach(function visit(idstr, ancestors) {
-    var node = nodes[idstr],
-        id   = node.id;
-
-    // if already exists, do nothing
-    if (visited[idstr]) return;
-
-    if (!Array.isArray(ancestors)) ancestors = [];
-
-    ancestors.push(id);
-
-    visited[idstr] = true;
-
-    node.afters.forEach(function(afterID) {
-      if (ancestors.indexOf(afterID) >= 0)  // if already in ancestors, a closed chain exists.
-        throw new Error('closed chain : ' +  afterID + ' is in ' + id);
-
-      visit(afterID.toString(), ancestors.map(function(v) { return v })); // recursive call
-    });
-
-    sorted.unshift(id);
-  });
-
-  return sorted;
 }
 
 function run(edges){
 
     var tmp = {}
     edges.forEach(function(v) {
-    	var from = v[0], to = v[1];
-    	if(!tmp[from+"&&&&"+to]){
-    		tmp[from+"&&&&"+to] = 0;
-    	}
-    	tmp[from+"&&&&"+to] += v[2];
-    	tmp[to+"&&&&"+from] = -tmp[from+"&&&&"+to];
+        var from = v[0], to = v[1];
+        if(!tmp[from+"&&&&"+to]){
+            tmp[from+"&&&&"+to] = 0;
+        }
+        tmp[from+"&&&&"+to] += v[2];
+        tmp[to+"&&&&"+from] = -tmp[from+"&&&&"+to];
     });
     edges = [];
     for(var x in tmp){
-    	if(tmp[x]>0){
-    		var v = x.split('&&&&');
-    		var from = v[0], to = v[1];
-    		edges.push([from,to,tmp[x]]);
-    	}
+        if(tmp[x]>0){
+            var v = x.split('&&&&');
+            var from = v[0], to = v[1];
+            edges.push([from,to,tmp[x]]);
+        }
     }
 
     var sorted = tsort(edges);
@@ -186,33 +143,36 @@ $(document).ready(function(){
     var $list = $('#transactions tbody');
     var $out = $('#out tbody');
     pc = new PayController();
+    $(".modify-payment").live("change", function(){
+        var $parent = $(this).parent().parent();
+        var id = $parent.data("id");
+        pc.update(
+            id,
+            $('.payment-from', $parent).val(),
+            $('.payment-to', $parent).val(),
+            $('.payment-value', $parent).val(),
+            $('.payment-description', $parent).val()
+        );
+    });
+    $(".remove-payment").live("click", function(){
+        if(confirm("Are you sure? This is irreversible.")){
+            pc.remove($(this).parent().parent().data("id"));
+        }
+    });
     pc.attach(function(a){
         var that = this;
         $list.empty();
         var out = [];
         for(var i in a){
-            var $to = $("<input class='form-control' placeholder='to'>").val(a[i].recipient).change(function(){
-                pc.update($(this).parent().parent().data("id"), a[i].sender, $(this).val(), a[i].value, a[i].description);
-            });
-            var $from = $("<input class='form-control' placeholder='from'>").val(a[i].sender).change(function(){
-                pc.update($(this).parent().parent().data("id"), $(this).val(), a[i].recipient, a[i].value, a[i].description);
-            });
-            var $value = $("<input class='form-control' type='number' placeholder='amount'>").val(a[i].value).change(function(){
-                pc.update($(this).parent().parent().data("id"), a[i].sender, a[i].recipient, $(this).val(), a[i].description);
-            });
-            var $description = $("<input class='form-control' placeholder='description'>").val(a[i].description).change(function(){
-                pc.update($(this).parent().parent().data("id"), a[i].sender, a[i].recipient, a[i].value, $(this).val());
-            });
-            var $remove = $("<div class='btn btn-warning'>Remove</div>").click(function(){
-                if(confirm("Are you sure? This is irreversible.")){
-                    pc.remove($(this).parent().parent().data("id"));
-                }
-            });
+            var $to = $("<input class='form-control modify-payment payment-to' placeholder='to'>").val(a[i].recipient);
             $to = $("<td>").append($to);
+            var $from = $("<input class='form-control modify-payment payment-from' placeholder='from'>").val(a[i].sender);
             $from = $("<td>").append($from);
+            var $value = $("<input class='form-control modify-payment payment-value' type='number' placeholder='amount'>").val(a[i].value);
             $value = $("<td>").append($value);
+            var $description = $("<input class='form-control modify-payment payment-description' placeholder='description'>").val(a[i].description);
             $description = $("<td>").append($description);
-            $remove = $("<td>").append($remove);
+            var $remove = $("<td><div class='btn btn-warning remove-payment'>Remove</div></td>");
             var $row = $("<tr>").data("id", a[i].ID).append($from, $to, $value, $description, $remove);
             $list.append($row);
             out.push([a[i].sender, a[i].recipient, a[i].value]);
@@ -220,15 +180,18 @@ $(document).ready(function(){
         $out.empty();
         try {
             var results = run(out);
+            if(results.length == 0){
+                $out.append("<tr><td colspan='5'>No payments yet. Enter payments above!</td></tr>");
+            }
+            for(var i in results){
+                $out.append("<tr><td>"+results[i][0]+"</td><td>"+results[i][1]+"</td><td>"+results[i][2]+"</td></tr>");
+            }
         } catch(e) {
-            alert("Payment graph contains a cycle!\n"+e);
-        }
-        for(var i in results){
-            $out.append("<tr><td>"+results[i][0]+"</td><td>"+results[i][1]+"</td><td>"+results[i][2]+"</td></tr>");
+            $out.append("<tr><td colspan='5'>Payments contain a cycle!<br>"+e+"</td></tr>");
         }
     });
     pc.list();
-    $("#new").submit(function(e){
+    $("#new").click(function(e){
         e.preventDefault();
         var $from = $("#new-from");
         var $to = $("#new-to");
