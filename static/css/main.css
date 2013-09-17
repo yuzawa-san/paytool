@@ -8,3 +8,7 @@ body a {
     color: #3D5C9D;
     text-decoration: none;
 }
+
+#print {
+    float:right;
+}
