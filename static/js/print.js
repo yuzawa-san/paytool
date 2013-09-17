@@ -10,7 +10,7 @@ $(document).ready(function(){
         for(var i in a){
             var $to = $("<td>").text(a[i].recipient);
             var $from= $("<td>").text(a[i].sender);
-            var $value = $("<td>").text(a[i].value);
+            var $value = $("<td>").text(a[i].value.toFixed(2));
             var $description = $("<td>").text(a[i].description);
             var $row = $("<tr>").append($from, $to, $value, $description);
             $list.append($row);
