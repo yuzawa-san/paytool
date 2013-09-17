@@ -10,7 +10,8 @@
     <script src="static/js/main.js"></script>
 </head>
 <body>
-
+    <datalist id="entities">
+    </datalist>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -32,8 +33,8 @@
         <table id="transactions" class="table table-striped">
             <thead>
                 <tr>
-                    <th><input class="form-control" id="new-from" placeholder="from" required/></th>
-                    <th><input class="form-control" id="new-to" placeholder="to" required/></th>
+                    <th><input class="form-control" id="new-from" placeholder="from" list="entities" required/></th>
+                    <th><input class="form-control" id="new-to" placeholder="to" list="entities" required/></th>
                     <th><input class="form-control" id="new-value" placeholder="value" value="0" type="number" required/></th> 
                     <th><input class="form-control" id="new-description" placeholder="description" /></th>
                     <th><input class="btn btn-primary" id="new" value="Add Item"/></th>

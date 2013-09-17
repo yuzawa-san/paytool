@@ -15,6 +15,8 @@ function PayController(){
     };
 
     this.add = function(to, from, value, description){
+        to = to.toUpperCase();
+        from = from.toUpperCase();
         db.transaction(function(tx){
             tx.executeSql("INSERT INTO exchange(sender, recipient, value, description) VALUES (?,?,?,?)",
             [to, from, value, description],
@@ -40,7 +42,8 @@ function PayController(){
     };
 
     this.update = function(id, to, from, value, description){
-        console.log(id,to,from,value,description);
+        to = to.toUpperCase();
+        from = from.toUpperCase();
         db.transaction(function(tx){
             tx.executeSql("UPDATE exchange SET sender = ?, recipient = ?, value = ?, description = ? WHERE id = ?", [to, from, value, description, id],
             successHandler,
@@ -163,10 +166,11 @@ $(document).ready(function(){
         var that = this;
         $list.empty();
         var out = [];
+        var entities = {};
         for(var i in a){
-            var $to = $("<input class='form-control modify-payment payment-to' placeholder='to'>").val(a[i].recipient);
+            var $to = $("<input class='form-control modify-payment payment-to' list='entities' placeholder='to'>").val(a[i].recipient);
             $to = $("<td>").append($to);
-            var $from = $("<input class='form-control modify-payment payment-from' placeholder='from'>").val(a[i].sender);
+            var $from = $("<input class='form-control modify-payment payment-from' list='entities' placeholder='from'>").val(a[i].sender);
             $from = $("<td>").append($from);
             var $value = $("<input class='form-control modify-payment payment-value' type='number' placeholder='amount'>").val(a[i].value);
             $value = $("<td>").append($value);
@@ -176,6 +180,8 @@ $(document).ready(function(){
             var $row = $("<tr>").data("id", a[i].ID).append($from, $to, $value, $description, $remove);
             $list.append($row);
             out.push([a[i].sender, a[i].recipient, a[i].value]);
+            entities[a[i].sender] = 1;
+            entities[a[i].recipient] = 1;
         }
         $out.empty();
         try {
@@ -188,6 +194,10 @@ $(document).ready(function(){
             }
         } catch(e) {
             $out.append("<tr><td colspan='5'>Payments contain a cycle!<br>"+e+"</td></tr>");
+        }
+        var $entities = $('#entities').empty();
+        for(var e in entities){
+            $entities.append('<option value="'+e+'">');
         }
     });
     pc.list();
