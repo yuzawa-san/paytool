@@ -17,6 +17,7 @@ $(document).ready(function(){
         if(confirm("Are you sure? This is irreversible.")){
             pc.remove($(this).parent().parent().data("id"));
         }
+        _gaq.push(['_trackEvent', 'UserAction', 'RemovePayment']);
     });
     pc.attach(function(a){
         var that = this;
@@ -69,6 +70,7 @@ $(document).ready(function(){
         $value.val('0');
         $description.val('');
         $from.focus();
+        _gaq.push(['_trackEvent', 'UserAction', 'AddPayment']);
     });
     $("#purge").click(function(){
         if(confirm("Are you sure? This is irreversible.")){
