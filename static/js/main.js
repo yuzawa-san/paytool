@@ -64,7 +64,23 @@ $(document).ready(function(){
         var $to = $("#new-to");
         var $value = $("#new-value");
         var $description = $("#new-description");
-        pc.add($from.val(), $to.val(), $value.val(), $description.val());
+        var senders = $from.val().split(/,\s*/);
+        var recipients = $to.val().split(/,\s*/);
+        var description = $description.val();
+        if(senders.length > 1 && recipients.length > 1){
+            alert("Only the sender OR the recipient may be a group of people. Both may not be groups.");
+            return;
+        }
+        var value = parseFloat($value.val()) / Math.max(recipients.length, senders.length);
+        if(senders.length > 1){
+            for(var i in senders){
+                pc.add(senders[i], recipients[0], value, description);
+            }
+        }else{
+            for(var i in recipients){
+                pc.add(senders[0], recipients[i], value, description);
+            }
+        }
         $from.val('');
         $to.val('');
         $value.val('0');
