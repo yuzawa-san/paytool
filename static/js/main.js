@@ -5,13 +5,17 @@ $(document).ready(function(){
     $(".modify-payment").live("change", function(){
         var $parent = $(this).parent().parent();
         var id = $parent.data("id");
+        var $from = $('.payment-from', $parent);
+        var $to = $('.payment-to', $parent);
         pc.update(
             id,
-            $('.payment-from', $parent).val(),
-            $('.payment-to', $parent).val(),
+            $from.val(),
+            $to.val(),
             $('.payment-value', $parent).val(),
             $('.payment-description', $parent).val()
         );
+        $from.val($from.val().toUpperCase());
+        $to.val($to.val().toUpperCase());
     });
     $(".remove-payment").live("click", function(){
         if(confirm("Are you sure? This is irreversible.")){
@@ -19,10 +23,9 @@ $(document).ready(function(){
         }
         _gaq.push(['_trackEvent', 'UserAction', 'RemovePayment']);
     });
-    pc.attach(function(a){
+    pc.attach(function(a, redraw){
         var that = this;
         $list.empty();
-        var out = [];
         var entities = {};
         for(var i in a){
             var $to = $("<input class='form-control modify-payment payment-to' list='entities' placeholder='to'>").val(a[i].recipient);
@@ -36,11 +39,19 @@ $(document).ready(function(){
             var $remove = $("<td><div class='btn btn-warning remove-payment'>Remove</div></td>");
             var $row = $("<tr>").data("id", a[i].ID).append($from, $to, $value, $description, $remove);
             $list.append($row);
-            out.push([a[i].sender, a[i].recipient, a[i].value]);
             entities[a[i].sender] = 1;
             entities[a[i].recipient] = 1;
         }
+        var $entities = $('#entities').empty();
+        for(var e in entities){
+            $entities.append('<option value="'+e+'">');
+        }
+    },
+    function(a){
         $out.empty();
+        var out = a.map(function(x){
+            return [x.sender, x.recipient, x.value];
+        });
         try {
             var results = run(out);
             if(results.length == 0){
@@ -52,13 +63,9 @@ $(document).ready(function(){
         } catch(e) {
             $out.append("<tr><td colspan='3'>Payments contain a cycle!<br>"+e+"</td></tr>");
         }
-        var $entities = $('#entities').empty();
-        for(var e in entities){
-            $entities.append('<option value="'+e+'">');
-        }
     });
-    pc.list();
-    $("#new").click(function(e){
+    pc.list(true);
+    var newHandler = function(e){
         e.preventDefault();
         var $from = $("#new-from");
         var $to = $("#new-to");
@@ -87,7 +94,13 @@ $(document).ready(function(){
         $description.val('');
         $from.focus();
         _gaq.push(['_trackEvent', 'UserAction', 'AddPayment']);
+    };
+    $(".new-transaction-enter").keyup(function(e){
+        if (e.which == 13) {
+            newHandler(e);
+        }
     });
+    $("#new").click(newHandler);
     $("#purge").click(function(){
         if(confirm("Are you sure? This is irreversible.")){
             pc.purge();

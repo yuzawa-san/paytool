@@ -1,5 +1,6 @@
 function PayController(){
     var render = function(){};
+    var calculate = function(){};
     var dbSize = 5 * 1024 * 1024; // 5MB
     var db = openDatabase("PayTool", "1.0", "Payment Manager", dbSize);
     var that = this;
@@ -10,8 +11,10 @@ function PayController(){
     var errorHandler = function(tx, e) {
         alert("There has been an error: " + e.message);
     };
-    var successHandler = function(tx, r) {
-        that.list();
+    var successHandler = function(redraw){
+        return function(tx, r) {
+            that.list(redraw);
+        }
     };
 
     this.add = function(to, from, value, description){
@@ -20,7 +23,7 @@ function PayController(){
         db.transaction(function(tx){
             tx.executeSql("INSERT INTO exchange(sender, recipient, value, description) VALUES (?,?,?,?)",
             [to, from, value, description],
-            successHandler,
+            successHandler(true),
             errorHandler);
         });
     };
@@ -28,7 +31,7 @@ function PayController(){
     this.remove = function(id){
         db.transaction(function(tx){
             tx.executeSql("DELETE FROM exchange WHERE ID=?", [id],
-            successHandler,
+            successHandler(true),
             errorHandler);
         });
     };
@@ -36,7 +39,7 @@ function PayController(){
     this.purge = function(id){
         db.transaction(function(tx){
             tx.executeSql("DELETE FROM exchange", [],
-            successHandler,
+            successHandler(true),
             errorHandler);
         });
     };
@@ -46,26 +49,30 @@ function PayController(){
         from = from.toUpperCase();
         db.transaction(function(tx){
             tx.executeSql("UPDATE exchange SET sender = ?, recipient = ?, value = ?, description = ? WHERE id = ?", [to, from, value, description, id],
-            successHandler,
+            successHandler(false),
             errorHandler);
         });
     };
 
-    this.list = function(){
+    this.list = function(redraw){
         db.transaction(function(tx) {
             tx.executeSql("SELECT * FROM exchange", [], function(tx, rs) {
                 var out = [];
                 for (var i=0; i < rs.rows.length; i++) {
                     out.push(rs.rows.item(i));
                 }
-                render(out);
+                if(redraw){
+                    render(out);
+                }
+                calculate(out);
             },
             errorHandler);
         });
     };
 
-    this.attach = function(callback){
-        render = callback;
+    this.attach = function(redrawCallback, calculateCallback){
+        render = redrawCallback;
+        calculate = calculateCallback;
     };
 }
 
