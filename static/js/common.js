@@ -147,7 +147,6 @@ function run(edges){
     out = out.sort(function(a,b){
         return b[2] - a[2];
     });
-    console.log(out);
     var rows = {};
     for(var i in out){
         
