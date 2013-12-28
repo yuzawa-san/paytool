@@ -1,6 +1,7 @@
 $(document).ready(function(){
     var $list = $('#transactions tbody');
     var $out = $('#out tbody');
+    var $flow = $('#flow tbody');
     pc = new PayController();
     $(".modify-payment").live("change", function(){
         var $parent = $(this).parent().parent();
@@ -28,15 +29,15 @@ $(document).ready(function(){
         $list.empty();
         var entities = {};
         for(var i in a){
-            var $to = $("<input class='form-control modify-payment payment-to' list='entities' placeholder='to'>").val(a[i].recipient);
+            var $to = $("<input class='form-control modify-payment payment-to input-sm' list='entities' placeholder='to'>").val(a[i].recipient);
             $to = $("<td>").append($to);
-            var $from = $("<input class='form-control modify-payment payment-from' list='entities' placeholder='from'>").val(a[i].sender);
+            var $from = $("<input class='form-control modify-payment payment-from input-sm' list='entities' placeholder='from'>").val(a[i].sender);
             $from = $("<td>").append($from);
-            var $value = $("<input class='form-control modify-payment payment-value' type='number' placeholder='amount'>").val(a[i].value);
+            var $value = $("<input class='form-control modify-payment payment-value input-sm' type='number' placeholder='amount'>").val(a[i].value);
             $value = $("<td>").append($value);
-            var $description = $("<input class='form-control modify-payment payment-description' placeholder='description'>").val(a[i].description);
+            var $description = $("<input class='form-control modify-payment payment-description input-sm' placeholder='description'>").val(a[i].description);
             $description = $("<td>").append($description);
-            var $remove = $("<td><div class='btn btn-warning remove-payment'>Remove</div></td>");
+            var $remove = $("<td><div class='btn btn-warning remove-payment btn-xs'>Remove</div></td>");
             var $row = $("<tr>").data("id", a[i].ID).append($from, $to, $value, $description, $remove);
             $list.append($row);
             entities[a[i].sender] = 1;
@@ -49,6 +50,7 @@ $(document).ready(function(){
     },
     function(a){
         $out.empty();
+        $flow.empty();
         var out = a.map(function(x){
             return [x.sender, x.recipient, x.value];
         });
@@ -56,9 +58,23 @@ $(document).ready(function(){
             var results = run(out);
             if(results.length == 0){
                 $out.append("<tr><td colspan='3'>No payments yet. Enter payments above!</td></tr>");
+                return;
             }
-            for(var i in results){
-                $out.append("<tr><td>"+results[i][0]+"</td><td>"+results[i][1]+"</td><td>"+results[i][2]+"</td></tr>");
+            for(var row in results){
+                var delta = results[row].value;
+                var action;
+                if(delta < 0){
+                    action = "<span class='action-neg'>pays</span>";
+                }else{
+                    action = "<span class='action-pos'>receives</span>";
+                }
+                $flow.append("<tr><td>"+row+"</td><td align='right'>"+action+"</td><td align='right'>"+Math.abs(delta).toFixed(2)+"</td></tr>");
+                if(!results[row].items.length){
+                    continue;
+                }
+                var recipients = results[row].items.map(function(w){ return w.to; }).join("<br>");
+                var values = results[row].items.map(function(w){ return w.value.toFixed(2); }).join("<br>");
+                $out.append("<tr><td>"+row+"</td><td>"+recipients+"</td><td align='right'>"+values+"</td></tr>");
             }
         } catch(e) {
             $out.append("<tr><td colspan='3'>Payments contain a cycle!<br>"+e+"</td></tr>");

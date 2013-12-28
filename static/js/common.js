@@ -139,10 +139,36 @@ function run(edges){
             if(i!=j){
                 var c = arr[sorted[i]][sorted[j]];
                 if(c){
-                    out.push([sorted[i], sorted[j], c.toFixed(2)]);
+                    out.push([sorted[i], sorted[j], c]);
                 }
             }
         }
     }
-    return out;
+    out = out.sort(function(a,b){
+        return b[2] - a[2];
+    });
+    console.log(out);
+    var rows = {};
+    for(var i in out){
+        
+        var from = out[i][0];
+        var to = out[i][1];
+        var value = out[i][2];
+        if(!rows[from]){
+            rows[from] = {
+                value: 0.0,
+                items: []
+            };
+        }
+        if(!rows[to]){
+            rows[to] = {
+                value: 0.0,
+                items: []
+            };
+        }
+        rows[from].value -= value;
+        rows[to].value += value;
+        rows[from].items.push({to:to, value:value});
+    }
+    return rows;
 }
