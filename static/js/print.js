@@ -21,12 +21,12 @@ $(document).ready(function(){
         var out = a.map(function(x){
             return [x.sender, x.recipient, x.value];
         });
+        if(out.length == 0){
+            $out.append("<tr><td colspan='3'>No payments.</td></tr>");
+            return;
+        }
         try {
             var results = run(out);
-            if(results.length == 0){
-                $out.append("<tr><td colspan='3'>No payments yet. Enter payments above!</td></tr>");
-            }
-            console.log(results);
             for(var row in results){
                 var delta = results[row].value;
                 var action;
