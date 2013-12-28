@@ -12,3 +12,11 @@ body a {
 #print {
     float:right;
 }
+
+.action-pos {
+    color:#060;
+}
+
+.action-neg {
+    color:#600;
+}

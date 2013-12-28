@@ -47,19 +47,22 @@
         <table id="transactions" class="table table-striped">
             <thead>
                 <tr>
-                    <th><input class="form-control" id="new-from" placeholder="from" list="entities" required/></th>
-                    <th><input class="form-control" id="new-to" placeholder="to" list="entities" required/></th>
-                    <th><input class="form-control new-transaction-enter" id="new-value" placeholder="value" value="0" type="number" required/></th> 
-                    <th><input class="form-control new-transaction-enter" id="new-description" placeholder="description" /></th>
-                    <th><button class="btn btn-primary" id="new">Add</button></th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <td><button id="purge" class="btn btn-danger btn-xs">Remove All</button></td>
                 </tr>
             </thead>
             <tbody>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4"></td>
-                    <td><button id="purge" class="btn btn-danger">Remove All</button></td>
+                    <th><input class="form-control" id="new-from" placeholder="from" list="entities" required/></th>
+                    <th><input class="form-control" id="new-to" placeholder="to" list="entities" required/></th>
+                    <th><input class="form-control new-transaction-enter" id="new-value" placeholder="value" value="0" type="number" required/></th> 
+                    <th><input class="form-control new-transaction-enter" id="new-description" placeholder="description" /></th>
+                    <th><button class="btn btn-primary" id="new">Add</button></th>
                 </tr>
             </tfoot>
         </table>
@@ -67,18 +70,36 @@
             <button class="btn btn-normal">Print</button>
         </a></div>
         <h3>Optimized Payments</h3>
-        <table id="out" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Amount</th> 
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        
+        <small>
+        <div class="row">
+            <div class="col-md-6">
+                <table id="out" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>To</th>
+                            <th style='text-align:right;'>Amount</th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table id="flow" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Person</th>
+                            <th style='text-align:right;'>Action</th>
+                            <th style='text-align:right;'>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </small>
         <footer>
             <hr>
             <p>a tool by <a href="https://github.com/yuzawa-san">yuzawa-san</a></p>
