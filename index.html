@@ -75,11 +75,15 @@
         </table>
         
         {% else %}
-        <h3>My Sheets</h3>
+        <center>
+            <h3>Welcome to paytool!</h3>
         
-        <p><a href='{{ auth_url }}'><button class='btn btn-success btn-lg'>Login</button></a></p>
+            <p><a href='{{ auth_url }}'><button class='btn btn-success btn-lg'>Login</button></a></p>
         
-        <p>Please login with your Google account to create payment sheets.</p>
+            <p>Login with your Google account to create and share payment sheets like the one below:</p>
+        
+            <img src="/static/img/demo.jpg" class="img-thumbnail">
+        </center>
         
         {% endif %}
         
