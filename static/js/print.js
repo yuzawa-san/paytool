@@ -7,8 +7,8 @@ $(document).ready(function(){
         var that = this;
         $list.empty();
         for(var i in a){
-            var $to = $("<td>").text(a[i].recipient);
-            var $from= $("<td>").text(a[i].sender);
+            var $to = $("<td>").text(a[i].to);
+            var $from= $("<td>").text(a[i].from);
             var $value = $("<td>").attr('align','right').text(a[i].value.toFixed(2));
             var $description = $("<td>").text(a[i].description);
             var $row = $("<tr>").append($from, $to, $value, $description);
@@ -19,7 +19,7 @@ $(document).ready(function(){
         $out.empty();
         $flow.empty();
         var out = a.map(function(x){
-            return [x.sender, x.recipient, x.value];
+            return [x.from, x.to, x.value];
         });
         if(out.length == 0){
             $out.append("<tr><td colspan='3'>No payments.</td></tr>");

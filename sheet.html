@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <script type="text/javascript">
 
+    var sheet_id = "{{sheet.key.urlsafe}}";
+
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-20761074-6']);
     _gaq.push(['_trackPageview']);
@@ -21,9 +23,7 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script src="/lib/tsort/tsort.js"></script>
     <script src="/static/js/common.js"></script>
-    {% if user %}
-    <script src="/static/js/home.js"></script>
-    {% endif %}
+    <script src="/static/js/main.js"></script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -33,7 +33,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class='active'><a href="/">My Sheets</a></li>
+                    <li><a href="/">My Sheets</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="https://github.com/yuzawa-san/paytool">Source</a></li>
                 </ul>
@@ -57,32 +57,74 @@
 
 
     <div class="container">
-        
-        {% if user %}
-        
-        <h3>My Sheets</h3>
-        
-        <table id="sheets" class="table table-striped">
+        <datalist id="entities">
+        </datalist>
+        <h2 id="sheet-info">{{ sheet.name }}
+            <small>{% if sheet.private %}
+            <span class="glyphicon glyphicon-user"></span>
+            {%else%}
+            <span class="glyphicon glyphicon-link"></span>
+            {% endif %} {{ sheet.owner.nickname }}
+            <button class='btn btn-info btn-xs'  data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
+            </small>
+        </h2>
+        <h3>Raw Payments</h3>
+        <table id="transactions" class="table table-striped">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Sharing</th>
-                    <th><button class="btn btn-primary" id="new">New Sheet</button></th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th><button id="purge" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span> Remove All</button></th>
                 </tr>
             </thead>
             <tbody>
             </tbody>
+            <tfoot>
+                <tr>
+                    <th><input class="form-control input-sm" id="new-from" placeholder="from" list="entities" required/></th>
+                    <th><input class="form-control input-sm" id="new-to" placeholder="to" list="entities" required/></th>
+                    <th><input class="form-control input-sm new-transaction-enter" id="new-value" placeholder="value" value="0" type="number" required/></th> 
+                    <th><input class="form-control input-sm new-transaction-enter" id="new-description" placeholder="description" /></th>
+                    <th><button class="btn btn-primary btn-sm" id="new"><span class="glyphicon glyphicon-plus"></span> Add</button></th>
+                </tr>
+            </tfoot>
         </table>
-        
-        {% else %}
-        <h3>My Sheets</h3>
-        
-        <p><a href='{{ auth_url }}'><button class='btn btn-success btn-lg'>Login</button></a></p>
-        
-        <p>Please login with your Google account to create payment sheets.</p>
-        
-        {% endif %}
-        
+        <div id="print"><a href="/sheet/{{ sheet.key.urlsafe }}/print" target="blank">
+            <button class="btn btn-normal"><span class="glyphicon glyphicon-print"></span> Print</button>
+        </a></div>
+        <h3>Optimized Payments</h3>
+        <small>
+        <div class="row">
+            <div class="col-md-6">
+                <table id="out" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>To</th>
+                            <th style='text-align:right;'>Amount</th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table id="flow" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Person</th>
+                            <th style='text-align:right;'>Action</th>
+                            <th style='text-align:right;'>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </small>
         <footer>
             <hr>
             <p>a tool by <a href="https://github.com/yuzawa-san">yuzawa-san</a></p>
@@ -95,18 +137,18 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="editor-title">Modal title</h4>
+                    <h4 class="modal-title" id="editor-title">Edit Sheet Settings</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="editor-name">Name</label>
-                        <input type="text" class="form-control" id="editor-name">
+                        <input type="text" class="form-control" id="editor-name" value="{{ sheet.name }}">
                     </div>
                     <div class="form-group">
                         <label for="editor-private">Sharing</label>
                         <select class="form-control" id="editor-private">
                           <option value="1">Private - Only you can see it</option>
-                          <option value="0">Link - Others with link can also see it</option>
+                          <option value="0"{% if not sheet.private%} selected{%endif%}>Link - Others with link can also see it</option>
                         </select>
                     </div>
                 </div>
@@ -117,5 +159,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>

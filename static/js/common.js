@@ -1,12 +1,33 @@
+var ajaxHelper = function(method, url, params, success){
+    if(method=="DELETE"){
+        url += "?" + $.param(params);
+        params = {}
+    }
+    $.ajax({
+        type: method,
+        url: url,
+        data: params,
+        success: function(r){
+            if(r.error !== undefined){
+                alert("An error has occurred!");
+                console.error(method, url, params, r.error);
+                return;
+            }
+            if(success){
+                success(r);
+            }
+        },
+        error: function(r){
+            alert("A server error has occurred!");
+            console.error(r.statusText);
+        }
+    });
+};
+
 function PayController(){
     var render = function(){};
     var calculate = function(){};
-    var dbSize = 5 * 1024 * 1024; // 5MB
-    var db = openDatabase("PayTool", "1.0", "Payment Manager", dbSize);
     var that = this;
-    db.transaction(function(tx) {
-        tx.executeSql("CREATE TABLE IF NOT EXISTS exchange(ID INTEGER PRIMARY KEY ASC, sender TEXT, recipient TEXT, value NUM, description TEXT)", []);
-    });
 
     var errorHandler = function(tx, e) {
         alert("There has been an error: " + e.message);
@@ -16,57 +37,72 @@ function PayController(){
             that.list(redraw);
         }
     };
-
+    
+    var ajax = function(method, url, params, redraw, success){
+        params.sheet_id = sheet_id;
+        if(method=="DELETE"){
+            url += "?" + $.param(params);
+            params = {}
+        }
+        $.ajax({
+            type: method,
+            url: url,
+            data: params,
+            success: function(r){
+                if(r.error !== undefined){
+                    alert("An error has occurred!");
+                    console.error(method, url, params, r.error);
+                    return;
+                }
+                if(success){
+                    success(r);
+                }else{
+                    that.list(redraw);
+                }
+            },
+            error: function(r){
+                alert("A server error has occurred!");
+                console.error(r.statusText);
+            }
+        });
+    }
+    
     this.add = function(to, from, value, description){
         to = to.toUpperCase();
         from = from.toUpperCase();
-        db.transaction(function(tx){
-            tx.executeSql("INSERT INTO exchange(sender, recipient, value, description) VALUES (?,?,?,?)",
-            [to, from, value, description],
-            successHandler(true),
-            errorHandler);
-        });
+        ajax("POST", "/api/item", {to: to, from: from, value: value, description: description}, true);
     };
 
     this.remove = function(id){
-        db.transaction(function(tx){
-            tx.executeSql("DELETE FROM exchange WHERE ID=?", [id],
-            successHandler(true),
-            errorHandler);
-        });
+        ajax("DELETE", "/api/item", {id: id}, true);
     };
 
     this.purge = function(id){
-        db.transaction(function(tx){
-            tx.executeSql("DELETE FROM exchange", [],
-            successHandler(true),
-            errorHandler);
+        $.ajax({
+            type: "DELETE",
+            url: "/api/sheet?purge=1&id="+sheet_id,
+            success: function(r){
+                that.list(true);
+            },
+            error: function(r){
+                alert("A server error has occurred!");
+                console.error(r.statusText);
+            }
         });
     };
 
     this.update = function(id, to, from, value, description){
         to = to.toUpperCase();
         from = from.toUpperCase();
-        db.transaction(function(tx){
-            tx.executeSql("UPDATE exchange SET sender = ?, recipient = ?, value = ?, description = ? WHERE id = ?", [to, from, value, description, id],
-            successHandler(false),
-            errorHandler);
-        });
+        ajax("PUT", "/api/item", {id: id, to: to, from: from, value: value, description: description}, false);
     };
 
     this.list = function(redraw){
-        db.transaction(function(tx) {
-            tx.executeSql("SELECT * FROM exchange", [], function(tx, rs) {
-                var out = [];
-                for (var i=0; i < rs.rows.length; i++) {
-                    out.push(rs.rows.item(i));
-                }
-                if(redraw){
-                    render(out);
-                }
-                calculate(out);
-            },
-            errorHandler);
+        ajax("GET", "/api/item", {}, false, function(r){
+            if(redraw){
+                render(r);
+            }
+            calculate(r);
         });
     };
 
