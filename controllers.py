@@ -13,12 +13,10 @@ from datetime import date, datetime
 def gravatar_hash(email):
     data = memcache.get(email, namespace='gravatar')
     if data is not None:
-        logging.info("Cache GET %s",email);
         return data
     else:
         email = email.strip().lower()
         data = hashlib.md5(email).hexdigest()
-        logging.error("Cache GEN %s",email);
         memcache.add(email, data, time=604800, namespace='gravatar') # keep for a week
         return data
 
