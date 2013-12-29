@@ -43,4 +43,7 @@ If there is a cycle, then the topological sort step will fail and there is no cl
 
 ## Privacy
 
-This tool uses client-side storage, so the debt information is not sent elsewhere. The data only lives in your browser. Specifically, this uses WebSQL Database.
+The offline storage version of this tool uses client-side storage, so the debt information is not sent elsewhere.
+The data only lives in your browser. Specifically, this uses WebSQL Database.
+
+The Google App Engine version stores it in their data store, so it is sent and resides (securely?) elsewhere.
