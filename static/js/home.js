@@ -38,9 +38,11 @@ $(document).ready(function(){
                 }, oldName, oldPrivate);
             });
             var $remove = $("<button class='btn btn-danger btn-xs' title='Remove'><span class='glyphicon glyphicon-trash'></button>").click(function(){
+                var data = $(this).parent().data('data');
+                var rowID = data.id;
                 if(confirm("Are you sure? This is irreversible.")){
                     _gaq.push(['_trackEvent', 'SheetAction', 'RemoveSheet']);
-                    ajaxHelper("DELETE","/api/sheet", {id: r[i].id}, function(r){
+                    ajaxHelper("DELETE","/api/sheet", {id: rowID}, function(r){
                         window.location.reload();
                     });
                 }
