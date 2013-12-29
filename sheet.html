@@ -59,18 +59,18 @@
     <div class="container">
         <datalist id="entities">
         </datalist>
-        <h2 id="sheet-info">{{ sheet.name }}<br>
+        <h3 id="sheet-info">{{ sheet.name }}
             <small>
-                <button class='btn btn-info btn-sm'  data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
                 <strong>Sharing:</strong> 
                 {% if sheet.private %}
                     <span class="glyphicon glyphicon-user"></span> Private
                 {%else%}
                     <span class="glyphicon glyphicon-link"></span> With Link
                 {% endif %}
+                <button class='btn btn-info btn-sm'  data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
             </small>
-        </h2>
-        <h3>Raw Payments</h3>
+        </h3>
+        <h4>Raw Payments</h4>
         <table id="transactions" class="table table-striped">
             <thead>
                 <tr>
@@ -98,7 +98,7 @@
                 <button class="btn btn-normal"><span class="glyphicon glyphicon-print"></span> Print</button>
             </a>
         </div>
-        <h3>Optimized Payments</h3>
+        <h4>Optimized Payments</h4>
         <small>
             <div class="row">
                 <div class="col-md-6">
