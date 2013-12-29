@@ -23,7 +23,7 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script src="/lib/tsort/tsort.js"></script>
     <script src="/static/js/common.js"></script>
-    <script src="/static/js/main.js"></script>
+    <script src="/static/js/print.js"></script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -59,46 +59,32 @@
     <div class="container">
         <datalist id="entities">
         </datalist>
-        <h2 id="sheet-info">{{ sheet.name }}<br>
+        <h3 id="sheet-info">{{ sheet.name }} 
             <small>
-                <button class='btn btn-info btn-sm'  data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
-                <strong>Sharing:</strong> 
-                {% if sheet.private %}
-                    <span class="glyphicon glyphicon-user"></span> Private
-                {%else%}
-                    <span class="glyphicon glyphicon-link"></span> With Link
-                {% endif %}
+                <img src="http://www.gravatar.com/avatar/{{gravatar}}?d=mm&s=36"> {{ sheet.owner.nickname }}
             </small>
-        </h2>
-        <h3>Raw Payments</h3>
-        <table id="transactions" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Amount</th>
-                    <th>Description</th>
-                    <th><button id="purge" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span> Remove All</button></th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th><input class="form-control input-sm" id="new-from" placeholder="from" list="entities" required/></th>
-                    <th><input class="form-control input-sm" id="new-to" placeholder="to" list="entities" required/></th>
-                    <th><input class="form-control input-sm new-transaction-enter" id="new-value" placeholder="value" value="0" type="number" required/></th> 
-                    <th><input class="form-control input-sm new-transaction-enter" id="new-description" placeholder="description" /></th>
-                    <th><button class="btn btn-primary btn-sm" id="new"><span class="glyphicon glyphicon-plus"></span> Add</button></th>
-                </tr>
-            </tfoot>
-        </table>
+        </h3>
+        <h4>Raw Payments</h4>
+        <small>
+            <table id="transactions" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th style='text-align:right;'>Amount</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </small>
         <div id="print">
             <a href="/sheet/{{ sheet.key.urlsafe }}/print" target="blank">
                 <button class="btn btn-normal"><span class="glyphicon glyphicon-print"></span> Print</button>
             </a>
         </div>
-        <h3>Optimized Payments</h3>
+        <h4>Optimized Payments</h4>
         <small>
             <div class="row">
                 <div class="col-md-6">
@@ -134,35 +120,5 @@
             <p>a tool by <a href="https://github.com/yuzawa-san">yuzawa-san</a></p>
         </footer>
     </div> <!-- /container -->
-
-    <!-- Modal -->
-    <div class="modal fade" id="editor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="editor-title">Edit Sheet Settings</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="editor-name">Name</label>
-                        <input type="text" class="form-control" id="editor-name" value="{{ sheet.name }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="editor-private">Sharing</label>
-                        <select class="form-control" id="editor-private">
-                          <option value="1">Private - Only you can see it</option>
-                          <option value="0"{% if not sheet.private%} selected{%endif%}>Link - Others with link can also see it</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="editor-save">Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </body>
 </html>

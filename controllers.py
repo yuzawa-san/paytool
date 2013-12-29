@@ -72,7 +72,7 @@ class SheetController(webapp.RequestHandler):
         if args[1]:
             self.response.out.write(template.render('print.html', values))
         elif user != sheet.owner:
-            self.redirect('/sheet/%s/print' % sheet.key.urlsafe())
+            self.response.out.write(template.render('display.html', values))
         else:
             self.response.out.write(template.render('sheet.html', values))
 
