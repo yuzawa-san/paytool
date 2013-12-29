@@ -2,11 +2,13 @@
 
 A tool for simplifying payments
 
+app engine version:
+[http://pay-tool.appspot.com/](http://pay-tool.appspot.com/)
+
 offline storage version:
 [http://yuzawa-san.github.io/paytool/](http://yuzawa-san.github.io/paytool/)
 
-app engine version:
-[http://pay-tool.appspot.com/](http://pay-tool.appspot.com/)
+![alt tag](/static/img/demo.jpg)
 
 
 # How It Works
