@@ -6,8 +6,10 @@ threadsafe: no
 
 handlers:
 - url: /static
+  expiration: 1d
   static_dir: static
 - url: /lib
+  expiration: 7d
   static_dir: lib
 - url: /.*
   script: main.app
