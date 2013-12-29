@@ -22,7 +22,7 @@ $(document).ready(function(){
         if(confirm("Are you sure? This is irreversible.")){
             pc.remove($(this).parent().parent().data("id"));
         }
-        _gaq.push(['_trackEvent', 'UserAction', 'RemovePayment']);
+        _gaq.push(['_trackEvent', 'PaymentAction', 'RemovePayment']);
     });
     pc.attach(function(a, redraw){
         var that = this;
@@ -109,7 +109,7 @@ $(document).ready(function(){
         $value.val('0');
         $description.val('');
         $from.focus();
-        _gaq.push(['_trackEvent', 'UserAction', 'AddPayment']);
+        _gaq.push(['_trackEvent', 'PaymentAction', 'AddPayment']);
     };
     $(".new-transaction-enter").keyup(function(e){
         if (e.which == 13) {

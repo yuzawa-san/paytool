@@ -26,7 +26,7 @@ $(document).ready(function(){
     ajaxHelper("GET","/api/sheet",{},function(r){
         for(var i in r){
             var $row = $("<tr>");
-            var $edit = $("<button class='btn btn-warning btn-xs'>Settings</button>").click(function(){
+            var $edit = $("<button class='btn btn-info btn-xs'><span class='glyphicon glyphicon-pencil'> Settings</button>").click(function(){
                 var data = $(this).parent().data('data');
                 var oldName = data.name;
                 var oldPrivate = data.private;
@@ -37,8 +37,9 @@ $(document).ready(function(){
                     });
                 }, oldName, oldPrivate);
             });
-            var $remove = $("<button class='btn btn-danger btn-xs'>Remove</button>").click(function(){
+            var $remove = $("<button class='btn btn-danger btn-xs' title='Remove'><span class='glyphicon glyphicon-trash'></button>").click(function(){
                 if(confirm("Are you sure? This is irreversible.")){
+                    _gaq.push(['_trackEvent', 'SheetAction', 'RemoveSheet']);
                     ajaxHelper("DELETE","/api/sheet", {id: r[i].id}, function(r){
                         window.location.reload();
                     });
@@ -53,6 +54,7 @@ $(document).ready(function(){
     
     $('#new').click(function(){
         editor(function(name, private){
+            _gaq.push(['_trackEvent', 'SheetAction', 'AddSheet']);
             ajaxHelper("POST","/api/sheet", {name: name, private: private}, function(r){
                 window.location = "/sheet/"+r.id;
             });
