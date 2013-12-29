@@ -1,3 +1,4 @@
+from google.appengine.api import memcache
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext import ndb
@@ -6,17 +7,33 @@ from google.appengine.ext.webapp import template
 from models import *
 import logging
 import json
+import hashlib
 from datetime import date, datetime
+
+def gravatar_hash(email):
+    data = memcache.get(email, namespace='gravatar')
+    if data is not None:
+        logging.info("Cache GET %s",email);
+        return data
+    else:
+        email = email.strip().lower()
+        data = hashlib.md5(email).hexdigest()
+        logging.error("Cache GEN %s",email);
+        memcache.add(email, data, time=60, namespace='gravatar')
+        return data
 
 class HomeController(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
+        avatar = None
         if user:
             url = users.create_logout_url(self.request.uri)
+            avatar = gravatar_hash(user.email())
         else:
             url = users.create_login_url(self.request.uri)
             
         values = {
+            'gravatar': avatar,
             'user': user,
             'auth_url': url,
         }
@@ -43,7 +60,10 @@ class SheetController(webapp.RequestHandler):
         else:
             url = users.create_login_url(self.request.uri)
         
+        avatar = gravatar_hash(sheet.owner.email())
+        
         values = {
+            'gravatar': avatar,
             'sheet': sheet,
             'user': user,
             'auth_url': url,
