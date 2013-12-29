@@ -65,9 +65,9 @@
                 {% if sheet.private %}
                     <span class="glyphicon glyphicon-user"></span> Private
                 {%else%}
-                    <span class="glyphicon glyphicon-link"></span> With Link
+                    <span id="linker" data-toggle="modal" data-target="#link"><span class="glyphicon glyphicon-link"></span> With Link</span>
                 {% endif %}
-                <button class='btn btn-info btn-sm'  data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
+                <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
             </small>
         </h3>
         <h4>Raw Payments</h4>
@@ -136,7 +136,7 @@
     </div> <!-- /container -->
 
     <!-- Modal -->
-    <div class="modal fade" id="editor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editor" tabindex="-1" role="dialog" aria-labelledby="sheetSettings" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -159,6 +159,25 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="editor-save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="link" tabindex="-1" role="dialog" aria-labelledby="sheetLink" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editor-name">Viewing URL:</label>
+                        <input type="text" class="form-control" id="link-url">
+                    </div>
+                    This URL can be given out to people so that they can view this sheet.
+                    Warning: Those who you give this to can give this to others.
+                    In the event that the URL gets into the wrong hands, set the sheet back to private.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
                 </div>
             </div>
         </div>

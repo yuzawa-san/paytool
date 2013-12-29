@@ -131,4 +131,7 @@ $(document).ready(function(){
             window.location.reload();
         });
     });
+    $('#link-url').val(window.location).click(function(){
+        $(this).select();
+    });
 });

@@ -20,3 +20,7 @@ body a {
 .action-neg {
     color:#600;
 }
+
+#linker {
+    cursor: pointer;
+}
