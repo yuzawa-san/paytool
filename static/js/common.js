@@ -67,7 +67,7 @@ function PayController(){
         });
     }
     
-    this.add = function(to, from, value, description){
+    this.add = function(from, to, value, description){
         to = to.toUpperCase();
         from = from.toUpperCase();
         ajax("POST", "/api/item", {to: to, from: from, value: value, description: description}, true);

@@ -29,9 +29,9 @@ $(document).ready(function(){
         $list.empty();
         var entities = {};
         for(var i in a){
-            var $to = $("<input class='form-control modify-payment payment-to input-sm' list='entities' placeholder='to'>").val(a[i].from);
+            var $to = $("<input class='form-control modify-payment payment-to input-sm' list='entities' placeholder='to'>").val(a[i].to);
             $to = $("<td>").append($to);
-            var $from = $("<input class='form-control modify-payment payment-from input-sm' list='entities' placeholder='from'>").val(a[i].to);
+            var $from = $("<input class='form-control modify-payment payment-from input-sm' list='entities' placeholder='from'>").val(a[i].from);
             $from = $("<td>").append($from);
             var $value = $("<input class='form-control modify-payment payment-value input-sm' type='number' placeholder='amount'>").val(a[i].value);
             $value = $("<td>").append($value);
@@ -40,8 +40,8 @@ $(document).ready(function(){
             var $remove = $("<td><div class='btn btn-warning remove-payment btn-xs'><span class='glyphicon glyphicon-minus'></span> Remove</div></td>");
             var $row = $("<tr>").data("id", a[i].id).append($from, $to, $value, $description, $remove);
             $list.append($row);
-            entities[a[i].from] = 1;
             entities[a[i].to] = 1;
+            entities[a[i].from] = 1;
         }
         var $entities = $('#entities').empty();
         for(var e in entities){
@@ -52,7 +52,7 @@ $(document).ready(function(){
         $out.empty();
         $flow.empty();
         var out = a.map(function(x){
-            return [x.to, x.from, x.value];
+            return [x.from, x.to, x.value];
         });
         if(out.length == 0){
             $out.append("<tr><td colspan='3'>No payments yet. Enter payments above!</td></tr>");
