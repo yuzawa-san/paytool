@@ -91,7 +91,7 @@ function PayController(){
         });
     };
 
-    this.update = function(id, to, from, value, description){
+    this.update = function(id, from, to, value, description){
         to = to.toUpperCase();
         from = from.toUpperCase();
         ajax("PUT", "/api/item", {id: id, to: to, from: from, value: value, description: description}, false);
