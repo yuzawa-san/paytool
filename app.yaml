@@ -5,6 +5,9 @@ api_version: 1
 threadsafe: no
 
 handlers:
+- url: /(robots\.txt)
+  static_files: \1
+  upload: (robots\.txt)
 - url: /static
   expiration: 1d
   static_dir: static
