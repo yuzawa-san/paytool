@@ -80,7 +80,7 @@
             </div>
             <div class="form-group">
                 <label class="sr-only" for="value">Value</label>
-                <input type="number" class="form-control" id="value" value=0 placeholder="value">
+                <input type="number" class="form-control" id="value" step="any" value=0 placeholder="value">
             </div>
             <div class="form-group">
                 <label class="sr-only" for="description">Description</label>
@@ -89,7 +89,7 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         
-        <h4>Previously Submitted Requests</h4>
+        <h4>Your Requests</h4>
         
         <table id="requestList" class="table table-striped">
             <thead>
@@ -98,6 +98,7 @@
                     <th>To</th>
                     <th>Amount</th>
                     <th>Description</th>
+                    <th>&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -110,5 +111,39 @@
         </footer>
     </div> <!-- /container -->
 
+
+    
+    <div class="modal fade" id="requestEditor" tabindex="-1" role="dialog" aria-labelledby="requestEditor" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="editor-title">Edit Payment Request</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editor-from">From</label>
+                        <input type="text" class="form-control" id="editor-from">
+                    </div>
+                    <div class="form-group">
+                        <label for="editor-to">To</label>
+                        <input type="text" class="form-control" id="editor-to">
+                    </div>
+                    <div class="form-group">
+                        <label for="editor-value">Value</label>
+                        <input type="number" class="form-control" id="editor-value">
+                    </div>
+                    <div class="form-group">
+                        <label for="editor-description">Description</label>
+                        <input type="text" class="form-control" id="editor-description">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="editor-save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

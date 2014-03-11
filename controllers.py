@@ -70,6 +70,8 @@ class SheetController(webapp.RequestHandler):
         if args[1] == '/print':
             self.response.out.write(template.render('print.html', values))
         elif args[1] == '/submit':
+            if user == sheet.owner:
+                self.redirect('/')
             if user and sheet.acceptsRequests:
                 self.response.out.write(template.render('submit.html', values))
             elif sheet.acceptsRequests:
@@ -263,7 +265,7 @@ class PaymentRequestApi(webapp.RequestHandler):
         else:
             super(PaymentRequestApi, self).handle_exception(exception, debug_mode)
 
-    def pregame(self, hasInstance=False, login=True, ownership=False):
+    def pregame(self, hasInstance=False, login=True):
         user = users.get_current_user()
         if login and not user:
             raise Exception(401, "Login Required")
@@ -314,7 +316,35 @@ class PaymentRequestApi(webapp.RequestHandler):
         payload = item.apiDict()
         self.response.out.write(json.dumps(payload))
 
+    def put(self):
+        user = users.get_current_user()
+        (sheet, item) = self.pregame(hasInstance=True)
+        print item.owner, user
+        if item.owner != user:
+            raise Exception(400, "Operation is forbidden. You must own payment request to edit it.")
+        toPerson = self.request.get('to')
+        fromPerson = self.request.get('from')
+        description = self.request.get('description')
+        value = self.request.get('value')
+        if value:
+            item.value = float(value)
+            if value < 0:
+                raise Exception(400, "Value must be non-negative.")
+        if toPerson:
+            item.toPerson = toPerson
+        if fromPerson:
+            item.fromPerson = fromPerson
+        if description:
+            item.description = description
+        item.put()
+        payload = item.apiDict()
+        self.response.out.write(json.dumps(payload))
+    
+
     def delete(self):
-        (_, item) = self.pregame(ownership=True, hasInstance=True)
+        user = users.get_current_user()
+        (sheet, item) = self.pregame(hasInstance=True)
+        if sheet.owner != user and item.owner != user:
+            raise Exception(400, "Operation is forbidden. You must own sheet or payment request to delete it.")
         item.key.delete()
         self.response.out.write(json.dumps(True))
