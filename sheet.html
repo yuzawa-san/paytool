@@ -63,9 +63,9 @@
             <small>
                 <strong>Sharing:</strong> 
                 {% if sheet.private %}
-                    <span class="glyphicon glyphicon-user"></span> Private
+                    <span class="glyphicon glyphicon-user"></span> Private{% if sheet.acceptsRequests %}, accepting payment requests{% endif %}
                 {%else%}
-                    <span id="linker" data-toggle="modal" data-target="#link"><span class="glyphicon glyphicon-link"></span> With Link</span>
+                    <span id="linker" data-toggle="modal" data-target="#link"><span class="glyphicon glyphicon-link"></span> With Link{% if sheet.acceptsRequests %}, accepting accepting payment requests{% endif %}</span>
                 {% endif %}
                 <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
                 <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#inbox"><span class="glyphicon glyphicon-inbox"></span> Inbox<span id="inbox-qty"></span></button>
