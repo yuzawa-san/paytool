@@ -71,7 +71,7 @@ class SheetController(webapp.RequestHandler):
             self.response.out.write(template.render('print.html', values))
         elif args[1] == '/submit':
             if user == sheet.owner:
-                self.redirect('/')
+                self.redirect('/sheet/'+sheet.key.urlsafe())
             if user and sheet.acceptsRequests:
                 self.response.out.write(template.render('submit.html', values))
             elif sheet.acceptsRequests:
