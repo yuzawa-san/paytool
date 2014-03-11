@@ -276,8 +276,6 @@ class PaymentRequestApi(webapp.RequestHandler):
             raise Exception(404, "Sheet Not Found")
         if not isinstance(sheet, Sheet):
             raise Exception(404, "Sheet Not Found")
-        if (ownership or sheet.private) and sheet.owner != user:
-            raise Exception(403, "Sheet Access Forbidden")
         instance = None
         if hasInstance:
             key = self.request.get('id')
