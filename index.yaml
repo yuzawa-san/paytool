@@ -15,6 +15,17 @@ indexes:
   properties:
   - name: createdDate
 
+- kind: PaymentRequest
+  ancestor: yes
+  properties:
+  - name: createdDate
+
+- kind: PaymentRequest
+  ancestor: yes
+  properties:
+  - name: owner
+  - name: createdDate
+
 - kind: Sheet
   properties:
   - name: owner

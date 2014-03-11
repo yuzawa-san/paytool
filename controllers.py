@@ -48,7 +48,7 @@ class SheetController(webapp.RequestHandler):
             self.redirect('/')
             return
         user = users.get_current_user()
-        if sheet.private and sheet.owner != user:
+        if sheet.private and sheet.owner != user and args[1] != '/submit':
             self.redirect('/')
             return
         
@@ -67,8 +67,15 @@ class SheetController(webapp.RequestHandler):
             'auth_url': url,
         }
         
-        if args[1]:
+        if args[1] == '/print':
             self.response.out.write(template.render('print.html', values))
+        elif args[1] == '/submit':
+            if user and sheet.acceptsRequests:
+                self.response.out.write(template.render('submit.html', values))
+            elif sheet.acceptsRequests:
+                self.redirect(url)
+            else:
+                self.redirect('/')
         elif user != sheet.owner:
             self.response.out.write(template.render('display.html', values))
         else:
@@ -121,7 +128,8 @@ class SheetApi(webapp.RequestHandler):
         self.pregame(auth=True)
         name = self.request.get('name') or "Untitled Sheet %s" % datetime.now()
         private = (self.request.get('private') == '1')
-        sheet = Sheet(owner=user, name=name, private=private)
+        acceptsRequests = (self.request.get('acceptsRequests') == '1')
+        sheet = Sheet(owner=user, name=name, private=private, acceptsRequests=acceptsRequests)
         key = sheet.put();
         payload = sheet.apiDict()
         self.response.headers["Content-Type"] = "application/json"
@@ -133,11 +141,14 @@ class SheetApi(webapp.RequestHandler):
         
         name = self.request.get('name')
         private = self.request.get('private')
+        acceptsRequests = self.request.get('acceptsRequests')
         
         if name:
             sheet.name = name
         if private:
             sheet.private = (private == '1')
+        if acceptsRequests:
+            sheet.acceptsRequests = (acceptsRequests == '1')
         key = sheet.put();
         payload = sheet.apiDict()
         self.response.headers["Content-Type"] = "application/json"
@@ -231,6 +242,76 @@ class LineItemApi(webapp.RequestHandler):
             item.fromPerson = fromPerson
         if description:
             item.description = description
+        item.put()
+        payload = item.apiDict()
+        self.response.out.write(json.dumps(payload))
+
+    def delete(self):
+        (_, item) = self.pregame(ownership=True, hasInstance=True)
+        item.key.delete()
+        self.response.out.write(json.dumps(True))
+
+
+class PaymentRequestApi(webapp.RequestHandler):
+    def handle_exception(self, exception, debug_mode):
+        if isinstance(exception.args[0], int):
+            self.response.headers["Content-Type"] = "application/json"
+            payload = {
+                'error':exception.args[1]
+            }
+            self.response.out.write(json.dumps(payload))
+        else:
+            super(PaymentRequestApi, self).handle_exception(exception, debug_mode)
+
+    def pregame(self, hasInstance=False, login=True, ownership=False):
+        user = users.get_current_user()
+        if login and not user:
+            raise Exception(401, "Login Required")
+        key = self.request.get('sheet_id')
+        if not key:
+            raise Exception(400, "Sheet ID Required")
+        try:
+            sheet = Key(urlsafe=key).get()
+        except:
+            raise Exception(404, "Sheet Not Found")
+        if not isinstance(sheet, Sheet):
+            raise Exception(404, "Sheet Not Found")
+        if (ownership or sheet.private) and sheet.owner != user:
+            raise Exception(403, "Sheet Access Forbidden")
+        instance = None
+        if hasInstance:
+            key = self.request.get('id')
+            if not key:
+                raise Exception(400, "Payment Request ID Required")
+            try:
+                instance = Key(urlsafe=key).get()
+            except:
+                raise Exception(404, "Payment Request Not Found")
+            if not isinstance(instance, PaymentRequest):
+                raise Exception(404, "Payment Request Not Found")
+            #if instance.parent != sheet:
+        self.response.headers["Content-Type"] = "application/json"
+        return (sheet, instance)
+
+    def get(self):
+        user = users.get_current_user()
+        (sheet, _) = self.pregame()
+        if sheet.owner == user:
+            items = PaymentRequest.query(ancestor=sheet.key).order(PaymentRequest.createdDate)
+        else:
+            items = PaymentRequest.query(PaymentRequest.owner==user, ancestor=sheet.key).order(PaymentRequest.createdDate)
+        payload = [item.apiDict() for item in items]
+        self.response.out.write(json.dumps(payload))
+
+    def post(self):
+        (sheet, _) = self.pregame(login=True)
+        toPerson = self.request.get('to') or "Unknown"
+        fromPerson = self.request.get('from') or "Unknown"
+        description = self.request.get('description') or ""
+        value = self.request.get('value') or 0.0
+        if value < 0:
+            raise Exception(400, "Value must be non-negative.")
+        item = PaymentRequest(parent=sheet.key, toPerson=toPerson, fromPerson=fromPerson, description=description, value=float(value), owner=users.get_current_user())
         item.put()
         payload = item.apiDict()
         self.response.out.write(json.dumps(payload))

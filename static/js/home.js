@@ -1,25 +1,28 @@
 $(document).ready(function(){
     var $table = $('#sheets tbody');
     
-    var editor = function(done, name, private){
+    var editor = function(done, name, private, acceptsRequests){
         var $title = $('#editor-title');
         var $name = $('#editor-name');
         var $private = $('#editor-private');
+        var $requests = $('#editor-requests');
         var $modal = $('#editor');
         var $save = $('#editor-save');
         if(name){ // editr
             $title.text('Edit Sheet Settings');
             $name.val(name);
             $private.val(private ? '1': '0');
+            $requests.val(acceptsRequests ? '1': '0');
         }else{ // new
             $title.text('New Sheet');
             $name.val('');
             $private.val('1');
+            $requests.val('0');
         }
         $save.off('click');
         $modal.modal('show');
         $save.on('click', function(){
-            done($name.val(), $private.val());
+            done($name.val(), $private.val(), $requests.val());
         });
     };
     
@@ -30,12 +33,13 @@ $(document).ready(function(){
                 var data = $(this).parent().data('data');
                 var oldName = data.name;
                 var oldPrivate = data.private;
+                var oldAcceptsRequests = data.acceptsRequests;
                 var rowID = data.id;
-                editor(function(name, private){
-                    ajaxHelper("PUT","/api/sheet", {id: rowID, name: name, private: private}, function(r){
+                editor(function(name, private, acceptsRequests){
+                    ajaxHelper("PUT","/api/sheet", {id: rowID, name: name, private: private, acceptsRequests: acceptsRequests}, function(r){
                         window.location.reload();
                     });
-                }, oldName, oldPrivate);
+                }, oldName, oldPrivate, oldAcceptsRequests);
             });
             var $remove = $("<button class='btn btn-danger btn-xs' title='Remove'><span class='glyphicon glyphicon-trash'></button>").click(function(){
                 var data = $(this).parent().data('data');
@@ -55,9 +59,9 @@ $(document).ready(function(){
     });
     
     $('#new').click(function(){
-        editor(function(name, private){
+        editor(function(name, private, acceptsRequests){
             _gaq.push(['_trackEvent', 'SheetAction', 'AddSheet']);
-            ajaxHelper("POST","/api/sheet", {name: name, private: private}, function(r){
+            ajaxHelper("POST","/api/sheet", {name: name, private: private, acceptsRequests: acceptsRequests}, function(r){
                 window.location = "/sheet/"+r.id;
             });
         });

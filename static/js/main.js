@@ -126,12 +126,97 @@ $(document).ready(function(){
     var $name = $('#editor-name');
     var $private = $('#editor-private');
     var $modal = $('#editor');
+    var $acceptsRequests = $('#editor-requests');
     $('#editor-save').click(function(){
-        ajaxHelper("PUT","/api/sheet", {id: sheet_id, name: $name.val(), private: $private.val()}, function(r){
+        ajaxHelper("PUT","/api/sheet", {id: sheet_id, name: $name.val(), private: $private.val(), acceptsRequests: $acceptsRequests.val()}, function(r){
             window.location.reload();
         });
     });
     $('#link-url').val(window.location).click(function(){
         $(this).select();
+    });
+    
+    var $inbox = $('#requestList tbody');
+    var inboxCount = 0;
+    var $inboxCount = $('#inbox-qty');
+    var updateInboxCount = function(){
+        if(inboxCount > 0){
+            $inboxCount.html(" <strong>("+inboxCount+")</strong>");
+        }else{
+            $inboxCount.empty();
+            $inbox.html("<tr><td colspan='6'>No Requests!</td><tr>")
+        }
+    }
+    
+    ajaxHelper("GET","/api/request", {sheet_id: sheet_id}, function(r){
+        $.each(r, function(){
+            var $row = $("<tr>");
+            $row.append("<td><input type='checkbox' value='"+this.owner.email+"' checked></td>");
+            $row.append("<td>"+this.owner.email+"</td>");
+            $row.append("<td>"+this.from+"</td>");
+            $row.append("<td>"+this.to+"</td>");
+            $row.append("<td>"+this.value.toFixed(2)+"</td>");
+            $row.append("<td>"+this.description+"</td>");
+            $row.data('object', this);
+            $inbox.append($row);
+        });
+        inboxCount = r.length;
+        updateInboxCount();
+    });
+    
+    var getSelected = function(){
+        var out = [];
+        $('input:checked', $inbox).each(function(){
+            out.push($(this).parent().parent());
+        });
+        return out;
+    };
+    $('#request-selector').click(function(){
+        if($(this).attr('checked')){
+            $('input', $inbox).attr('checked', true);
+        }else{
+            $('input', $inbox).attr('checked', false);
+        }
+    });
+    $('#request-remove').click(function(){
+        if(!confirm("Are you sure you wish to remove the selected requests? This cannot be undone.")){
+            return;
+        }
+        $.each(getSelected(), function(){
+            var $row = this;
+            ajaxHelper("DELETE","/api/request", {sheet_id: sheet_id, id: this.data('object').id}, function(r){
+                $row.remove();
+                inboxCount--;
+                updateInboxCount();
+            });
+        });
+    });
+    $('#request-migrate').click(function(){
+        $.each(getSelected(), function(){
+            var row = this.data('object');
+            var $row = this;
+            var senders = row.from.split(/,\s*/);
+            var recipients = row.to.split(/,\s*/);
+            var description = row.description;
+            if(senders.length > 1 && recipients.length > 1){
+                alert("Only the sender OR the recipient may be a group of people. Both may not be groups.");
+                return;
+            }
+            var value = row.value / Math.max(recipients.length, senders.length);
+            if(senders.length > 1){
+                for(var i in senders){
+                    pc.add(senders[i], recipients[0], value, description);
+                }
+            }else{
+                for(var i in recipients){
+                    pc.add(senders[0], recipients[i], value, description);
+                }
+            }
+            ajaxHelper("DELETE","/api/request", {sheet_id: sheet_id, id: row.id}, function(r){
+                $row.remove();
+                inboxCount--;
+                updateInboxCount();
+            });
+        });
     });
 });

@@ -68,6 +68,7 @@
                     <span id="linker" data-toggle="modal" data-target="#link"><span class="glyphicon glyphicon-link"></span> With Link</span>
                 {% endif %}
                 <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
+                <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#inbox"><span class="glyphicon glyphicon-inbox"></span> Inbox<span id="inbox-qty"></span></button>
             </small>
         </h3>
         <h4>Raw Payments</h4>
@@ -155,6 +156,13 @@
                           <option value="0"{% if not sheet.private%} selected{%endif%}>Link - Others with link can also see it</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="editor-private">Accept Payment Requests</label>
+                        <select class="form-control" id="editor-requests">
+                          <option value="1">Yes</option>
+                          <option value="0"{% if not sheet.acceptsRequests%} selected{%endif%}>No</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -177,6 +185,36 @@
                     In the event that the URL gets into the wrong hands, set the sheet back to private.
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="inbox" tabindex="-1" role="dialog" aria-labelledby="sheetInbox" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <small>
+                    <table id="requestList" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="request-selector" checked></th>
+                                <th>Submitter</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    </small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="request-remove">Remove Selected</button>
+                    <button type="button" class="btn btn-success" id="request-migrate">Add Selected</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
                 </div>
             </div>

@@ -3,7 +3,8 @@ from controllers import *
 
 app = webapp.WSGIApplication([
     ('/', HomeController),
-    ('/sheet/([^/]*)(/print)?', SheetController),
+    ('/sheet/([^/]*)(/[^/]*)?', SheetController),
     ('/api/sheet', SheetApi),
     ('/api/item', LineItemApi),
+    ('/api/request', PaymentRequestApi),
 ], debug=True)

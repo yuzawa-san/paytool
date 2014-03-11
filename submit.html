@@ -23,7 +23,7 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script src="/lib/tsort/tsort.js"></script>
     <script src="/static/js/common.js"></script>
-    <script src="/static/js/print.js"></script>
+    <script src="/static/js/submit.js"></script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -57,71 +57,58 @@
 
 
     <div class="container">
-        <datalist id="entities">
-        </datalist>
         <h3 id="sheet-info">{{ sheet.name }} 
             <small>
                 <img src="http://www.gravatar.com/avatar/{{gravatar}}?d=mm&s=36"> {{ sheet.owner.nickname }}
             </small>
-            {% if user and sheet.acceptsRequests %}
-            <a href="/sheet/{{ sheet.key.urlsafe }}/submit"><button class='btn btn-info btn-sm' data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-send"></span> Submit Payment Request</button></a>
-            {% endif %}
         </h3>
-        <h4>Raw Payments</h4>
-        <small>
-            <table id="transactions" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>From</th>
-                        <th>To</th>
-                        <th style='text-align:right;'>Amount</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </small>
-        <div id="print">
-            <a href="/sheet/{{ sheet.key.urlsafe }}/print" target="blank">
-                <button class="btn btn-normal"><span class="glyphicon glyphicon-print"></span> Print</button>
-            </a>
-        </div>
-        <h4>Optimized Payments</h4>
-        <small>
-            <div class="row">
-                <div class="col-md-6">
-                    <table id="out" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>From</th>
-                                <th>To</th>
-                                <th style='text-align:right;'>Amount</th> 
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-md-6">
-                    <table id="flow" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Person</th>
-                                <th style='text-align:right;'>Action</th>
-                                <th style='text-align:right;'>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
+        
+        {% if not sheet.private %}
+        <p><a href="/sheet/{{ sheet.key.urlsafe }}">view sheet</a></p>
+        {% endif %}
+        
+        <h4>Submit Request for Payment <span id="done" style="display:none;">Request Submitted</span></h4>
+        
+        <form class="form-inline" role="form" id="request-form">
+            <div class="form-group">
+                <label class="sr-only" for="from">From</label>
+                <input type="text" class="form-control" id="from" placeholder="from">
             </div>
-        </small>
+            <div class="form-group">
+                <label class="sr-only" for="to">To</label>
+                <input type="text" class="form-control" id="to" placeholder="to">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="value">Value</label>
+                <input type="number" class="form-control" id="value" value=0 placeholder="value">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="description">Description</label>
+                <input type="text" class="form-control" id="description" placeholder="description">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        
+        <h4>Previously Submitted Requests</h4>
+        
+        <table id="requestList" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        
         <footer>
             <hr>
             <p>a tool by <a href="https://github.com/yuzawa-san">yuzawa-san</a></p>
         </footer>
     </div> <!-- /container -->
+
 </body>
 </html>
