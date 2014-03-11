@@ -132,18 +132,23 @@ $(document).ready(function(){
             window.location.reload();
         });
     });
-    $('#link-url').val(window.location).click(function(){
+    var $link = $('#link-url').val(window.location);
+    var $link = $('#submit-url').val(window.location+"/submit");
+    $('.copy-url').click(function(){
         $(this).select();
     });
     
     var $inbox = $('#requestList tbody');
     var inboxCount = 0;
     var $inboxCount = $('#inbox-qty');
+    var $inboxBtn = $('#inboxBtn');
     var updateInboxCount = function(){
         if(inboxCount > 0){
+            $inboxBtn.show();
             $inboxCount.html(" <strong>("+inboxCount+")</strong>");
         }else{
             $inboxCount.empty();
+            $inboxBtn.hide();
             $inbox.html("<tr><td colspan='6'>No Requests!</td><tr>")
         }
     }

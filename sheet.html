@@ -65,10 +65,10 @@
                 {% if sheet.private %}
                     <span class="glyphicon glyphicon-user"></span> Private{% if sheet.acceptsRequests %}, accepting payment requests{% endif %}
                 {%else%}
-                    <span id="linker" data-toggle="modal" data-target="#link"><span class="glyphicon glyphicon-link"></span> With Link{% if sheet.acceptsRequests %}, accepting accepting payment requests{% endif %}</span>
+                    <span id="linker" data-toggle="modal" data-target="#link"><span class="glyphicon glyphicon-link"></span> With Link{% if sheet.acceptsRequests %}, accepting payment requests{% endif %}</span>
                 {% endif %}
                 <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
-                <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#inbox"><span class="glyphicon glyphicon-inbox"></span> Inbox<span id="inbox-qty"></span></button>
+                <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#inbox" id="inboxBtn"><span class="glyphicon glyphicon-inbox"></span> Inbox<span id="inbox-qty"></span></button>
             </small>
         </h3>
         <h4>Raw Payments</h4>
@@ -178,11 +178,17 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="editor-name">Viewing URL:</label>
-                        <input type="text" class="form-control" id="link-url">
+                        <input type="text" class="form-control copy-url" id="link-url">
                     </div>
                     This URL can be given out to people so that they can view this sheet.
                     Warning: Those who you give this to can give this to others.
                     In the event that the URL gets into the wrong hands, set the sheet back to private.
+                    {% if sheet.acceptsRequests %}
+                    <div class="form-group">
+                        <label for="editor-name">Submission URL:</label>
+                        <input type="text" class="form-control copy-url" id="submit-url">
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>

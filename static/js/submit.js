@@ -16,7 +16,7 @@ $(document).ready(function(){
                 $row.append("<td>"+this.to+"</td>");
                 $row.append("<td>"+this.value.toFixed(2)+"</td>");
                 $row.append("<td>"+this.description+"</td>");
-                $row.append("<td><button class='btn editRequest btn-warning btn-xs'>edit</button> <button class='btn removeRequest btn-danger btn-xs'>delete</button></td>");
+                $row.append("<td><button class='btn editRequest btn-warning btn-xs'><span class='glyphicon glyphicon-pencil'></span> edit</button> <button class='btn removeRequest btn-danger btn-xs'><span class='glyphicon glyphicon-minus'></span> delete</button></td>");
                 $row.data('object', this);
                 $inbox.append($row);
             });
