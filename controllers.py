@@ -36,6 +36,23 @@ class HomeController(webapp.RequestHandler):
             'auth_url': url,
         }
         self.response.out.write(template.render('index.html', values))
+        
+class StatsController(webapp.RequestHandler):
+    def get(self):
+        if not users.is_current_user_admin():
+            self.redirect('/')
+            return
+        user = users.get_current_user()
+        
+        values = {
+            'users': Sheet.query(group_by=[Sheet.owner], projection=[Sheet.owner]).count(),
+            'sheets': Sheet.query().count(),
+            'lineItems': LineItem.query().count(),
+            'paymentRequests': PaymentRequest.query().count(),
+        }
+        
+        self.response.headers["Content-Type"] = "text/plain"
+        self.response.out.write(template.render('stats.txt', values))
 
 class SheetController(webapp.RequestHandler):
     def get(self, *args):

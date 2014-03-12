@@ -1,0 +1,6 @@
+paytool stats
+
+Users: {{ users }}
+Sheets: {{ sheets }}
+LineItems: {{ lineItems }}
+PaymentRequests: {{ paymentRequests }}
