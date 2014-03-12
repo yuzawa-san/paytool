@@ -64,11 +64,11 @@
                 <strong>Sharing:</strong>
                 <span id="linker" data-toggle="modal" data-target="#link">
                 {% if sheet.private %}
-                    <span class="glyphicon glyphicon-user"></span> Private,
+                    <span class="glyphicon glyphicon-user"></span> Private
                 {%else%}
-                    <span class="glyphicon glyphicon-link"></span> With Link,
+                    <span class="glyphicon glyphicon-link"></span> With Link
                 {% endif %}
-                {% if sheet.acceptsRequests %}accepting payment requests{% endif %}</span>
+                {% if sheet.acceptsRequests %} - accepting payment requests{% endif %}</span>
                 <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
                 <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#inbox" id="inboxBtn"><span class="glyphicon glyphicon-inbox"></span> Inbox<span id="inbox-qty"></span></button>
             </small>
