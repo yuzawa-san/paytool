@@ -52,7 +52,9 @@ $(document).ready(function(){
                 }
             });
             $row.append("<td><a href='/sheet/"+r[i].id+"'>"+r[i].name+"</a></td>");
-            $row.append($("<td>").html(r[i].private ? "<span class='glyphicon glyphicon-user'></span> Private" : "<span class='glyphicon glyphicon-link'></span> With Link"));
+            $row.append($("<td>").html(
+                (r[i].private ? "<span class='glyphicon glyphicon-user'></span> Private" : "<span class='glyphicon glyphicon-link'></span> With Link")+
+                (r[i].acceptsRequests ? ", Accepts Requests" : "")));
             $row.append($("<td>").data('data',r[i]).append($edit, " ", $remove));
             $table.append($row);
         }
