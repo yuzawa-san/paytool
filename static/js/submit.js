@@ -36,6 +36,7 @@ $(document).ready(function(){
                 var $row = $(this).parent().parent();
                 ajaxHelper("DELETE","/api/request", {sheet_id: sheet_id, id: $row.data('object').id}, function(r){
                     $row.remove();
+                     _gaq.push(['_trackEvent', 'PaymentAction', 'RemoveRequest']);
                 });
             });
         });
@@ -67,6 +68,7 @@ $(document).ready(function(){
                     $done.fadeOut();
                 },3000);
                 loadRequests();
+                 _gaq.push(['_trackEvent', 'PaymentAction', 'AddRequest']);
             });
         return false;
     });

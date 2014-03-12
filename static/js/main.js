@@ -195,6 +195,7 @@ $(document).ready(function(){
                 updateInboxCount();
             });
         });
+         _gaq.push(['_trackEvent', 'PaymentAction', 'DenyRequest']);
     });
     $('#request-migrate').click(function(){
         $.each(getSelected(), function(){
@@ -222,6 +223,7 @@ $(document).ready(function(){
                 inboxCount--;
                 updateInboxCount();
             });
+             _gaq.push(['_trackEvent', 'PaymentAction', 'MigrateRequest']);
         });
     });
 });
