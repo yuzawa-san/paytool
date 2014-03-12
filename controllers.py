@@ -319,7 +319,6 @@ class PaymentRequestApi(webapp.RequestHandler):
     def put(self):
         user = users.get_current_user()
         (sheet, item) = self.pregame(hasInstance=True)
-        print item.owner, user
         if item.owner != user:
             raise Exception(400, "Operation is forbidden. You must own payment request to edit it.")
         toPerson = self.request.get('to')
