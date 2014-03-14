@@ -24,6 +24,8 @@ var ajaxHelper = function(method, url, params, success){
     });
 };
 
+var graphEdges, graphEdgesFinal, graphNodes;
+
 function PayController(){
     var render = function(){};
     var calculate = function(){};
@@ -134,8 +136,9 @@ function run(edges){
             edges.push([from,to,tmp[x]]);
         }
     }
-
     var sorted = tsort(edges);
+    graphNodes = sorted;
+    graphEdges = edges;
     //sorted.reverse();
     var arr = new Array();
     for(var i in sorted){
@@ -183,6 +186,7 @@ function run(edges){
             }
         }
     }
+    graphEdgesFinal = out;
     out = out.sort(function(a,b){
         return b[2] - a[2];
     });
