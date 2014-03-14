@@ -57,11 +57,11 @@ function renderGraph(){
         return { id: s, value: { label: s } };
     });
     var edgesOriginal = graphEdges.map(function(s) {
-        return { u: s[0], v: s[1] };
+        return { u: s[0], v: s[1], value: {label: (Math.round(s[2])+'') } };
     });
     
     var edgesOptimized = graphEdgesFinal.map(function(s) {
-        return { u: s[0], v: s[1] };
+        return { u: s[0], v: s[1], value: {label: (Math.round(s[2])+'') } };
     });
     
     var layout = dagreD3.layout().rankDir('TB');
