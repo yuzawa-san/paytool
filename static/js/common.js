@@ -70,6 +70,9 @@ function PayController(){
     this.add = function(from, to, value, description){
         to = to.toUpperCase();
         from = from.toUpperCase();
+        if(to === from){
+            return;
+        }
         ajax("POST", "/api/item", {to: to, from: from, value: value, description: description}, true);
     };
 
