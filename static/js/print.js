@@ -68,13 +68,16 @@ $(document).ready(function(){
                     $watch.data('id', r);
                     $watch.html("<span class='glyphicon glyphicon-remove'></span> Remove from Watchlist");
                     $watch.on('click', function(){
+                        if(!confirm("Are you sure you want to remove this sheet from your watchlist")){
+                            return;
+                        }
                         $watch.hide();
                         ajaxHelper("DELETE", '/api/watchlist', {id: $watch.data('id')}, function(r){
                             setTimeout(loadWatchBox, 750);
                         });
                     });
                 }
-                $watch.show();
+                $watch.fadeIn();
             });
         }
         loadWatchBox();

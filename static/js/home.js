@@ -84,7 +84,7 @@ $(document).ready(function(){
                 }
             });
             $row.append("<td><a href='/sheet/"+r[i].sheet.id+"'>"+r[i].sheet.name+"</a></td>");
-            $row.append("<td>"+r[i].sheet.owner.email+"]</td>");
+            $row.append("<td>"+r[i].sheet.owner.email+"</td>");
             $row.append($("<td>").data('data',r[i]).append($remove));
             $watchTable.append($row);
         }

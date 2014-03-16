@@ -66,10 +66,10 @@
                 <img src="http://www.gravatar.com/avatar/{{gravatar}}?d=mm&r=pg&s=36"> {{ sheet.owner.nickname }}
             </small>
             {% if sheet.acceptsRequests %}
-            <a href="/sheet/{{ sheet.key.urlsafe }}/submit" class='btn btn-info btn-sm'><span class="glyphicon glyphicon-send"></span> {% if not user %}Login to {% endif%}Submit Payment Request</a>
+            <a href="/sheet/{{ sheet.key.urlsafe }}/submit" class='floatRight btn btn-info btn-sm'><span class="glyphicon glyphicon-send"></span> {% if not user %}Login to {% endif%}Submit Payment Request</a>
             {% endif %}
             {% if user %}
-            <button id="watch" class="btn btn-info btn-sm"></button>
+            <button id="watch" class="floatRight btn btn-info btn-sm">Loading Watchlist...</button>
             {% endif %}
         </h3>
         <h4>Raw Payments</h4>

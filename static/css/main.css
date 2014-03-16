@@ -9,6 +9,16 @@ body a {
     text-decoration: none;
 }
 
+#protip {
+    font-size:12px;
+    color:gray;
+}
+
+.floatRight {
+    float:right;
+    margin-left:10px;
+}
+
 #print {
     float:right;
 }

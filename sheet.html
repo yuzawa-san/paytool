@@ -69,8 +69,8 @@
                     <span class="glyphicon glyphicon-link"></span> With Link
                 {% endif %}
                 {% if sheet.acceptsRequests %} - accepting payment requests{% endif %}</span>
-                <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
-                <button class='btn btn-info btn-sm' data-toggle="modal" data-target="#inbox" id="inboxBtn"><span class="glyphicon glyphicon-inbox"></span> Inbox<span id="inbox-qty"></span></button>
+                <button class='floatRight btn btn-info btn-sm' data-toggle="modal" data-target="#editor"><span class="glyphicon glyphicon-pencil"></span> Settings</button>
+                <button class='floatRight btn btn-info btn-sm' data-toggle="modal" data-target="#inbox" id="inboxBtn"><span class="glyphicon glyphicon-inbox"></span> Inbox<span id="inbox-qty"></span></button>
             </small>
         </h3>
         <h4>Raw Payments</h4>
@@ -88,11 +88,18 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th><input class="form-control input-sm" id="new-from" placeholder="from" list="entities" required/></th>
-                    <th><input class="form-control input-sm" id="new-to" placeholder="to" list="entities" required/></th>
+                    <th><input class="form-control input-sm displayProtip" id="new-from" placeholder="from" list="entities" required/></th>
+                    <th><input class="form-control input-sm displayProtip" id="new-to" placeholder="to" list="entities" required/></th>
                     <th><input class="form-control input-sm new-transaction-enter" id="new-value" placeholder="value" value="0" type="number" required/></th> 
                     <th><input class="form-control input-sm new-transaction-enter" id="new-description" placeholder="description" /></th>
                     <th><button class="btn btn-primary btn-sm" id="new"><span class="glyphicon glyphicon-plus"></span> Add</button></th>
+                </tr>
+                <tr>
+                    <td colspan="5" id="protip">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        Multiple 'from' or 'to' values (but not both) can be specified using commas.
+                        e.g. from 'a,b,c' to 'd' will request that the amount be split 3 ways.
+                    </td>
                 </tr>
             </tfoot>
         </table>
