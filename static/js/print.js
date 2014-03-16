@@ -49,6 +49,37 @@ $(document).ready(function(){
         }
     });
     pc.list(true);
+    
+    var $watch = $('#watch');
+    if($watch.length > 0){
+        var loadWatchBox = function(){
+            ajaxHelper("GET", "/api/watchlist", {sheet_id: sheet_id}, function(r){
+                $watch.off('click');
+                if(r === false){
+                    $watch.html("<span class='glyphicon glyphicon-ok'></span> Add to Watchlist");
+                    $watch.on('click', function(){
+                        $watch.hide();
+                        ajaxHelper("POST", '/api/watchlist', {sheet_id: sheet_id}, function(r){
+                            $watch.data('id', r.id);
+                            setTimeout(loadWatchBox, 750);
+                        });
+                    });
+                }else{
+                    $watch.data('id', r);
+                    $watch.html("<span class='glyphicon glyphicon-remove'></span> Remove from Watchlist");
+                    $watch.on('click', function(){
+                        $watch.hide();
+                        ajaxHelper("DELETE", '/api/watchlist', {id: $watch.data('id')}, function(r){
+                            setTimeout(loadWatchBox, 750);
+                        });
+                    });
+                }
+                $watch.show();
+            });
+        }
+        loadWatchBox();
+    }
+    
 });
 
 function renderGraph(){

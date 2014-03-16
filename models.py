@@ -13,6 +13,11 @@ class Sheet(ndb.Model):
             'name': self.name,
             'private': self.private,
             'acceptsRequests': self.acceptsRequests,
+            'owner': {
+                'user_id': self.owner.user_id(),
+                'nickname': self.owner.nickname(),
+                'email': self.owner.email(),
+            }
         }
     
 class LineItem(ndb.Model):
@@ -53,4 +58,15 @@ class PaymentRequest(ndb.Model):
                 'nickname': self.owner.nickname(),
                 'email': self.owner.email(),
             }
+        }
+
+
+class WatchlistItem(ndb.Model):
+    sheet = ndb.KeyProperty(indexed=True)
+    owner = ndb.UserProperty(indexed=True)
+
+    def apiDict(self):
+        return {
+            'id': self.key.urlsafe(),
+            'sheet': self.sheet.get().apiDict()
         }

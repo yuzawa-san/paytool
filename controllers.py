@@ -364,3 +364,83 @@ class PaymentRequestApi(webapp.RequestHandler):
             raise Exception(400, "Operation is forbidden. You must own sheet or payment request to delete it.")
         item.key.delete()
         self.response.out.write(json.dumps(True))
+
+
+class WatchlistApi(webapp.RequestHandler):
+    def handle_exception(self, exception, debug_mode):
+        if isinstance(exception.args[0], int):
+            self.response.headers["Content-Type"] = "application/json"
+            payload = {
+                'error':exception.args[1]
+            }
+            self.response.out.write(json.dumps(payload))
+        else:
+            super(WatchlistApi, self).handle_exception(exception, debug_mode)
+
+    def pregame(self, hasInstance=False):
+        user = users.get_current_user()
+        if not user:
+            raise Exception(401, "Login Required")
+        instance = None
+        if hasInstance:
+            key = self.request.get('id')
+            if not key:
+                raise Exception(400, "Watch List Item ID Required")
+            try:
+                instance = Key(urlsafe=key).get()
+            except:
+                raise Exception(404, "Watch List Item Not Found")
+            if not isinstance(instance, WatchlistItem):
+                raise Exception(404, "Watch List Item Not Found")
+            #if instance.parent != sheet:
+        self.response.headers["Content-Type"] = "application/json"
+        return instance
+
+    def get(self):
+        self.pregame()
+        user = users.get_current_user()
+        key = self.request.get('sheet_id')
+        if key:
+            try:
+                sheet = Key(urlsafe=key)
+            except:
+                raise Exception(404, "Sheet Not Found")
+            item = WatchlistItem.gql("WHERE owner = :owner AND sheet = :sheet", owner=user, sheet=sheet).get()
+            if item:
+                payload = item.key.urlsafe()
+            else:
+                payload = False
+        else:
+            items = WatchlistItem.gql("WHERE owner = :owner", owner=user)
+            payload = [item.apiDict() for item in items]
+        self.response.out.write(json.dumps(payload))
+
+    def post(self):
+        self.pregame()
+        user = users.get_current_user()
+        key = self.request.get('sheet_id')
+        if not key:
+            raise Exception(400, "Sheet ID Required")
+        try:
+            sheet = Key(urlsafe=key).get()
+        except:
+            raise Exception(404, "Sheet Not Found")
+        if not isinstance(sheet, Sheet):
+            raise Exception(404, "Sheet Not Found")
+        
+        item = WatchlistItem.gql("WHERE owner = :owner AND sheet = :sheet", owner=user, sheet=sheet.key).get()
+        if item:
+            payload = item.apiDict()
+        else:
+            item = WatchlistItem(sheet=sheet.key, owner=user)
+            item.put()
+            payload = item.apiDict()
+        self.response.out.write(json.dumps(payload))
+
+    def delete(self):
+        user = users.get_current_user()
+        item = self.pregame(hasInstance=True)
+        if item.owner != user:
+            raise Exception(400, "Operation is forbidden. You must own a watchlist item to delete it.")
+        item.key.delete()
+        self.response.out.write(json.dumps(True))

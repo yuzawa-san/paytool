@@ -7,5 +7,6 @@ app = webapp.WSGIApplication([
     ('/api/sheet', SheetApi),
     ('/api/item', LineItemApi),
     ('/api/request', PaymentRequestApi),
+    ('/api/watchlist', WatchlistApi),
     ('/stats', StatsController),
 ], debug=True)

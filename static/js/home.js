@@ -1,5 +1,6 @@
 $(document).ready(function(){
     var $table = $('#sheets tbody');
+    var $watchTable = $('#watchlist tbody');
     
     var editor = function(done, name, private, acceptsRequests){
         var $title = $('#editor-title');
@@ -57,6 +58,25 @@ $(document).ready(function(){
                 (r[i].acceptsRequests ? ", Accepts Requests" : "")));
             $row.append($("<td>").data('data',r[i]).append($edit, " ", $remove));
             $table.append($row);
+        }
+    });
+    
+    ajaxHelper("GET", "/api/watchlist", {}, function(r){
+        for(var i in r){
+            var $row = $("<tr>");
+            var $remove = $("<button class='btn btn-warning btn-xs' title='Remove'><span class='glyphicon glyphicon-minus'> remove</button>").click(function(){
+                var data = $(this).parent().data('data');
+                var rowID = data.id;
+                if(confirm("Are you sure? This is irreversible.")){
+                    ajaxHelper("DELETE","/api/watchlist", {id: rowID}, function(r){
+                        window.location.reload();
+                    });
+                }
+            });
+            $row.append("<td><a href='/sheet/"+r[i].sheet.id+"'>"+r[i].sheet.name+"</a></td>");
+            $row.append("<td>"+r[i].sheet.owner.nickname+" ["+r[i].sheet.owner.email+"]</td>");
+            $row.append($("<td>").data('data',r[i]).append($remove));
+            $watchTable.append($row);
         }
     });
     
