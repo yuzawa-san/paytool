@@ -68,7 +68,9 @@
             {% if sheet.acceptsRequests %}
             <a href="/sheet/{{ sheet.key.urlsafe }}/submit" class='btn btn-info btn-sm'><span class="glyphicon glyphicon-send"></span> {% if not user %}Login to {% endif%}Submit Payment Request</a>
             {% endif %}
+            {% if user %}
             <button id="watch" class="btn btn-info btn-sm"></button>
+            {% endif %}
         </h3>
         <h4>Raw Payments</h4>
         <small>

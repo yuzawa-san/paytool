@@ -28,6 +28,11 @@ $(document).ready(function(){
     };
     
     ajaxHelper("GET","/api/sheet",{},function(r){
+        if(r.length === 0){
+            var $row = $("<tr><td colspan='3'><em>No Sheets!</em></td></tr>");
+            $table.append($row);
+            return;
+        }
         for(var i in r){
             var $row = $("<tr>");
             var $edit = $("<button class='btn btn-info btn-xs'><span class='glyphicon glyphicon-pencil'> Settings</button>").click(function(){
@@ -62,6 +67,11 @@ $(document).ready(function(){
     });
     
     ajaxHelper("GET", "/api/watchlist", {}, function(r){
+        if(r.length === 0){
+            var $row = $("<tr><td colspan='3'><em>No Sheets in Watchlist!</em></td></tr>");
+            $watchTable.append($row);
+            return;
+        }
         for(var i in r){
             var $row = $("<tr>");
             var $remove = $("<button class='btn btn-warning btn-xs' title='Remove'><span class='glyphicon glyphicon-minus'> remove</button>").click(function(){
@@ -74,7 +84,7 @@ $(document).ready(function(){
                 }
             });
             $row.append("<td><a href='/sheet/"+r[i].sheet.id+"'>"+r[i].sheet.name+"</a></td>");
-            $row.append("<td>"+r[i].sheet.owner.nickname+" ["+r[i].sheet.owner.email+"]</td>");
+            $row.append("<td>"+r[i].sheet.owner.email+"]</td>");
             $row.append($("<td>").data('data',r[i]).append($remove));
             $watchTable.append($row);
         }
