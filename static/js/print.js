@@ -52,6 +52,10 @@ $(document).ready(function(){
 });
 
 function renderGraph(){
+    var originalFrame = document.getElementById("original");
+    if(!originalFrame){
+        return;
+    }
     // States and transitions from RFC 793
     var people = graphNodes.map(function(s) {
         return { id: s, value: { label: s } };
@@ -66,7 +70,7 @@ function renderGraph(){
     
     var layout = dagreD3.layout().rankDir('TB');
     var renderer1 = new dagreD3.Renderer();
-    var g1 = renderer1.layout(layout).run(dagreD3.json.decode(people, edgesOriginal), d3.select(document.getElementById("original")));
+    var g1 = renderer1.layout(layout).run(dagreD3.json.decode(people, edgesOriginal), d3.select(originalFrame));
     d3.select(document.getElementById("originalContainer"))
     .attr("width", g1.graph().width + 40)
     .attr("height", g1.graph().height + 40);
