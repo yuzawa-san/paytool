@@ -57,15 +57,17 @@
 
 
     <div class="container">
+        
         <h3 id="sheet-info">{{ sheet.name }} 
             <small>
                 <img src="http://www.gravatar.com/avatar/{{gravatar}}?d=mm&r=pg&s=36"> {{ sheet.owner.nickname }}
             </small>
+            {% if not sheet.private %}
+            <a class="btn btn-sm btn-info" href="/sheet/{{ sheet.key.urlsafe }}">view sheet</a>
+            {% endif %}
         </h3>
         
-        {% if not sheet.private %}
-        <p><a href="/sheet/{{ sheet.key.urlsafe }}">view sheet</a></p>
-        {% endif %}
+        
         
         <h4>Submit Request for Payment <span id="done" style="display:none;">Request Submitted</span></h4>
         

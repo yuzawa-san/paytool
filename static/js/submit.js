@@ -10,6 +10,11 @@ $(document).ready(function(){
         $('.removeRequest').off('click');
         $inbox.empty();
         ajaxHelper("GET","/api/request", {sheet_id: sheet_id}, function(r){
+            if(r.length === 0){
+                var $row = $("<tr><td colspan='4'><em>No Requests!</em></td></tr>");
+                $inbox.append($row);
+                return;
+            }
             $.each(r, function(){
                 var $row = $("<tr>");
                 $row.append("<td>"+this.from+"</td>");
