@@ -24,3 +24,29 @@ body a {
 #linker {
     cursor: pointer;
 }
+
+svg {
+  border: 1px solid black;
+  overflow: hidden;
+}
+
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 10px;
+}
+
+.node rect {
+  stroke-width: 1px;
+  stroke: black;
+  fill: #cff;
+}
+.edgeLabel rect {
+  fill: #fff;
+}
+
+.edgePath path {
+  stroke: black;
+  stroke-width: 1px;
+  fill: none;
+}
